@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-title" content="北海道家族遊">
+    <title>Hokkaido 2026 | 家族慢遊行程表</title>
+    <style>
+        /* --- 視覺風格定義 (請勿隨意修改此區) --- */
+        :root {
+            --primary: #0ea5e9;
+            --secondary: #2dd4bf;
+            --bg: #f0fdfa;
+            --text-dark: #1e293b;
+            --text-light: #475569;
+            --lunch-bg: #f0fdf4;
+            --lunch-text: #166534;
+            --dinner-bg: #fff7ed;
+            --dinner-text: #9a3412;
+            --card-white: #ffffff;
+            --acc-gray: #64748b; 
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            margin: 0; padding: 0;
+            line-height: 1.6;
+            font-size: 18px; /* 長輩友善大字體 */
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .hero {
+            height: 220px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: white; padding: 20px;
+        }
+        .hero h1 { margin: 0; font-size: 2.2rem; letter-spacing: 2px; }
+        .hero p { margin: 8px 0 0; opacity: 0.9; font-weight: bold; font-size: 1.1rem; }
+
+        .quick-info {
+            max-width: 95%; margin: -25px auto 20px;
+            background: white; border-radius: 20px;
+            display: grid; grid-template-cols: repeat(2, 1fr);
+            gap: 12px; padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative; z-index: 10; border: 1px solid #e2e8f0;
+        position: relative; z-index: 10; border: 1px solid #e2e8f0;
+        text-align: center;
+        }
+        .info-label { font-size: 16px; color: var(--text-light); font-weight: 800; }
+        .info-val { font-size: 16px; font-weight: 800; color: var(--primary); }
+
+        .tabs {
+            display: flex; justify-content: center; gap: 12px;
+            margin-bottom: 20px; position: sticky; top: 0px; z-index: 100; padding: 10px;
+            background: rgba(240, 253, 250, 0.85); /* 搭配背景色做出半透明毛玻璃效果 */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .tab-btn {
+            background: white; border: 2px solid #e2e8f0;
+            padding: 10px 20px; border-radius: 50px;
+            font-size: 18px; font-weight: bold; color: var(--text-light);
+            cursor: pointer; flex: 1; max-width: 120px;
+        }
+        .tab-btn.active { background: var(--tab-color, var(--primary)); color: white; border-color: var(--tab-color, var(--primary)); transform: scale(1.05); }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 0 15px 120px; }
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .card {
+            background: var(--card-white); border-radius: 24px;
+            padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 8px solid var(--primary);
+        }
+
+        .acc-card { 
+            border-left-color: var(--acc-gray) !important; 
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left-width: 8px;
+        }
+
+        .card-header { display: flex; align-items: center; justify-content: space-between; }
+        .day-tag { color: var(--primary); font-weight: 900; font-size: 1.6rem; }
+        .date-tag { font-size: 14px; background: #e0f2fe; color: var(--primary); padding: 4px 12px; border-radius: 12px; font-weight: bold; }
+        .card-title { font-weight: bold; font-size: 20px; display: flex; align-items: center; gap: 10px; margin: 12px 0; line-height: 1.4; }
+
+        .meal-box { border-radius: 16px; padding: 15px; margin-top: 12px; }
+        .lunch { background-color: var(--lunch-bg); border: 1px solid #bbf7d0; }
+        .lunch .label { background: #166534; color: white; }
+        .dinner { background-color: var(--dinner-bg); border: 1px solid #fed7aa; }
+        .dinner .label { background: #9a3412; color: white; }
+        .meal-box .label { font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 6px; margin-right: 8px; }
+        .meal-content { font-size: 18px; font-weight: 800; color: #0f172a; }
+        .meal-sub { font-size: 15px; color: var(--text-light); margin-top: 5px; }
+        .meal-link { color: inherit; text-decoration: none; border-bottom: 2px dashed #cbd5e1; display: inline-flex; align-items: center; gap: 4px; }
+
+        /* --- 描述文字中的連結樣式 --- */
+        .desc-list { margin: 0; padding-left: 24px; font-size: 16px; color: #334155; line-height: 1.5; }
+        .desc-list li { margin-bottom: 6px; }
+        .desc-link { color: var(--text-dark); text-decoration: underline; text-decoration-style: dashed; text-underline-offset: 3px; font-weight: bold; }
+        /* --- 行程筆記視覺樣式 --- */
+        .note-box { background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 16px; padding: 15px; margin-top: 12px; }
+        .note-box .label { background: #64748b; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
+        .note-list { margin: 0; padding-left: 24px; font-size: 16px; color: #334155; line-height: 1.5; }
+        .note-list li { margin-bottom: 6px; }
+        .note-link { color: var(--primary); text-decoration: underline; text-decoration-style: dashed; text-underline-offset: 3px; font-weight: bold; }
+
+        .acc-stay-tag { font-size: 14px; font-weight: 900; color: var(--acc-gray); margin-bottom: 8px; display: block; }
+        .acc-title { font-size: 22px; font-weight: 900; margin-bottom: 10px; color: #334155; }
+        .acc-desc { font-size: 17px; color: #475569; }
+        .acc-img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 16px; margin: 10px 0 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: block; }
+        .carousel { position: relative; margin: 10px 0 15px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; }
+        .carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .carousel-track::-webkit-scrollbar { display: none; }
+        .carousel-slide { flex: 0 0 100%; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; scroll-snap-align: start; display: block; }
+        .carousel-hint { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.55); color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; pointer-events: none; backdrop-filter: blur(4px); font-weight: bold; letter-spacing: 1px; }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+            background: rgba(255, 255, 255, 0.85); color: var(--text-dark); border: none;
+            width: 36px; height: 36px; border-radius: 50%; font-size: 18px; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s;
+        }
+        .carousel:hover .carousel-btn { opacity: 1; }
+        .carousel-btn.left { left: 10px; }
+        .carousel-btn.right { right: 10px; }
+        @media (hover: none) { .carousel-btn { display: none; } } /* 手機版自動隱藏按鈕 */
+        .btn-link {
+            text-decoration: none; font-size: 16px; background: #ffffff;
+            color: var(--text-dark); padding: 12px 20px; border-radius: 12px;
+            font-weight: bold; display: flex; align-items: center; gap: 10px;
+            border: 1px solid #e2e8f0; margin-top: 10px; width: fit-content;
+        }
+        .btn-dark { background: #334155; color: white; border: none; }
+        .icon { width: 22px; height: 22px; fill: currentColor; }
+        
+        /* --- 垂直時間軸視覺樣式 --- */
+        .route-timeline { display: flex; flex-direction: column; margin: 15px 0 20px; }
+        .tl-stop { display: flex; align-items: center; gap: 12px; }
+        .tl-dot { width: 14px; height: 14px; border-radius: 50%; background: white; border: 4px solid var(--primary); flex-shrink: 0; box-sizing: border-box; }
+        .tl-icon-wrapper { width: 14px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position: relative; z-index: 1; }
+        .tl-meal-img { width: 18px; height: 18px; border-radius: 50%; object-fit: contain; flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); background: white; }
+        .tl-text { font-size: 19px; font-weight: bold; color: var(--text-dark); line-height: 1.3; }
+        .stop-link { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; border-bottom: 2px dashed #cbd5e1; }
+        .map-icon { width: 18px; height: 18px; fill: var(--primary); flex-shrink: 0; }
+        .tl-segment { display: flex; align-items: center; gap: 17px; min-height: 26px; margin: 2px 0; }
+        .tl-line { width: 2px; min-height: 24px; background: #cbd5e1; margin-left: 6px; flex-shrink: 0; align-self: stretch; border-radius: 2px; }
+        .tl-time { font-size: 13px; color: var(--text-light); background: #f1f5f9; padding: 4px 10px; border-radius: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+        a.tl-time { text-decoration: none; color: var(--primary); background: #e0f2fe; border: 1px solid #bae6fd; transition: transform 0.2s; cursor: pointer; }
+        a.tl-time:active { transform: scale(0.95); }
+
+        .drive-time {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 14px; color: var(--text-light); background: #f1f5f9;
+            padding: 4px 10px; border-radius: 8px; margin-bottom: 10px; font-weight: bold;
+        }
+        .drive-time .icon { width: 16px; height: 16px; }
+
+        .start-time {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; margin-bottom: 4px;
+            font-size: 15px; padding: 5px 12px; border-radius: 8px; font-weight: bold;
+        }
+
+        footer { position: fixed; bottom: 25px; width: 100%; display: flex; justify-content: center; gap: 15px; pointer-events: none; padding-bottom: env(safe-area-inset-bottom); z-index: 100; }
+        .float-btn {
+            pointer-events: auto; display: inline-flex; align-items: center; gap: 8px;
+            background: #1e293b; color: white; padding: 12px 24px; border-radius: 50px;
+            text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            transition: background-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div>
+            <h1>北海道旅遊去</h1>
+            <p>2026年夏季</p>
+        </div>
+    </header>
+
+    <section class="quick-info" id="quick-info"></section>
+
+    <nav class="tabs" id="phase-tabs"></nav>
+
+    <main class="container" id="main-content"></main>
+
+    <footer>
+        <a href="https://www.google.com/search?q=北海道天氣" target="_blank" class="float-btn" id="global-weather-btn">
+            <svg class="icon" viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+            查詢氣溫
+        </a>
+        <a href="https://www.google.com/maps" target="_blank" class="float-btn">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            開啟地圖
+        </a>
+    </footer>
+
+    <script>
+        /* ================================================================
+           行程內容修改區 (ITINERARY_DATA)
+           ================================================================
+        */
+        const ITINERARY_DATA = {
+            quickInfo: [
+                { label: "家族成員", val: "9 人 (6成人、3小孩)" },
+                { label: "交通方式", val: "二世谷和長程移動採取包車行動<br>札幌市區內移動地鐵或計程車" },
+                { label: "去程航班", val: "JX850 (10:05 ~ 15:10)" },
+                { label: "回程航班", val: "JX851 (16:25 ~ 19:35)" }
+            ],
+            phases: [
+                {
+                    id: 1,
+                    name: "二世谷",
+                    accentColor: "#0ea5e9",
+                    accommodation: {
+                        stayNights: 5,
+                        title: "Setsu Niseko 雪二世谷",
+                        mapUrl: "https://maps.app.goo.gl/V3TGJxu3sLf3tySw9",
+                        images: [
+                            "hotel1_0.jpg", "hotel1_1.jpeg", "hotel1_2.jpeg", "hotel1_3.jpeg", 
+                            "hotel1_4.jpeg", "hotel1_5.jpeg"
+                        ],
+                        desc: "套房設計，擁有獨立臥室、廚房、洗烘設備與寬敞客廳，空間感極佳；早餐有Buffet和日式西式套餐可選。",
+                        links: [
+                            //{ text: "房型設施", url: "https://setsuniseko.com/en/accommodation/1-bedroom-suite/", isDark: true },
+                            { text: "官網", url: "https://setsuniseko.com/en/#", isDark: true }
+                        ]
+                    },
+                    days: [
+                        {   day: "D1", date: "7/5 抵達日", 
+                            title: "新千歲機場 ➔ 飯店", 
+                            routeTimes: ["2小時"],
+                            locationLinks: {
+                                "新千歲機場": "https://maps.app.goo.gl/GUcRQdUwm3LFN4Sx7"
+                            },
+                            lunch: { name: "機上"}, 
+                            dinner: { name: "Afuri 柚子鹽拉麵", sub: "飯店樓下即可享用。" } 
+                        },
+                        { 
+                            day: "D2", date: "7/6 名水美景", 
+                            startTime: "10:00",
+                            title: "飯店 ➔ 京極町名水公園 ➔ 午餐 Villa LUPICIA ➔ 第二有島鴕鳥牧場 ➔ Lucky Supermarket Kutchan shop ➔ 飯店", 
+                            routeTimes: ["20分", "25分","20分", "20分", "10分"],
+                            locationLinks: {
+                                "京極町名水公園": "https://maps.app.goo.gl/ZaufHopUrnTThcFK8",
+                                "午餐 Villa LUPICIA": "https://maps.app.goo.gl/bS7nY6EU8BosX2ds9",
+                                "第二有島鴕鳥牧場": "https://maps.app.goo.gl/6XEFsPVxfeeW6mTZ8",
+                                "Lucky Supermarket Kutchan shop": "https://maps.app.goo.gl/FqJDA4WgHHm5Nz9E9"
+                            },
+                            notes: [
+                                "所有點離飯店都在20分鐘車程內，隨時可先回飯店休息。",
+                                "午餐方案 A：在餐廳吃。",
+                                "午餐方案 B：若疲累，早點到Villa LUPICIA Boutique選購熟食，回飯店用餐。",
+                                "<strong>Lucky Supermarket</strong>：購買所需生活用品及生鮮食材。"
+                            ],
+                            lunch: { name: "Villa LUPICIA", sub: "法式精品料理", url: "https://villa.lupicia.co.jp/ja/index.html" }, 
+                            dinner: { name: "房間內自炊和牛海鮮盛宴", sub: "享用超市採買的新鮮和牛與北海道蔬果" } 
+                        },
+                        { 
+                            day: "D3", date: "7/7 洞爺湖遊", 
+                            startTime: "09:30",
+                            title: "飯店 ➔ 洞爺湖溫泉/洞爺湖八景 ➔ 午餐 仙堂庵 ➔ Lake Hill Farm 冰淇淋農場 ➔ SAIRO展望台 ➔ 晚餐 外帶 Niseko Pizza ➔ 飯店 ", 
+                            routeTimes: ["1.5小時", "10分","15分","5分","1小時","10分"],
+                            locationLinks: {
+                                "午餐 仙堂庵": "https://maps.app.goo.gl/LFkZMJ51uNCGJcEbA",
+                                "Lake Hill Farm 冰淇淋農場": "https://maps.app.goo.gl/bbCM3zjUN1PpbHpS6",
+                                "SAIRO展望台": "https://maps.app.goo.gl/osis1rCtHWNqPDwM6",
+                                "晚餐 外帶 Niseko Pizza": "https://maps.app.goo.gl/DnQ3oKgze5ki1FL99"
+                            },
+                            notes: [
+                                "洞爺湖距離飯店約1.5小時車程，所以無法分團行動。",
+                            ],
+                            lunch: { name: "仙堂庵", sub: "一邊看湖景一邊享用美味的日式定食", url: "https://www.wakasaimo.com/tw/sendouan/" }, 
+                            dinner: { name: "外帶 Niseko Pizza", sub: "搭配北海道新鮮蔬果，於飯店房內用餐", url: "https://www.madeinhokkaido.com/niseko-pizza/" } 
+                        },
+                        { 
+                            day: "D4", date: "7/8 探險活動", 
+                            startTime: "09:30",
+                            title: "飯店 ➔ Niseko Village Pure 戶外活動 ➔ 午餐 Niseko-yo ➔ 飯店 ➔ 晚餐 Yakiniku ➔ 飯店", 
+                            /*links: [{ text: "活動項目", url: "https://www.niseko-village.com/wp-content/uploads/2025/07/Pure_PG_EN.pdf" }],*/
+                            notes: [
+                                "所有點離飯店都在20分鐘車程內，隨時可先回飯店休息。",
+                                "<a href='https://www.niseko-village.com/wp-content/uploads/2025/07/Pure_PG_EN.pdf' target='_blank' class='note-link'>Niseko Village Pure</a>",
+                                "雨備改去<a href='https://hanazononiseko.com/en/summer/activities/galaxy-of-kidz' target='_blank' class='note-link'>Galaxy of Kidz</a> "
+                            ],
+                            lunch: { name: "Niseko-yo 商店街 MM Smash Burger" }, 
+                            dinner: { name: "燒肉黑牛屋 Yakiniku" } 
+                        },
+                        { 
+                            day: "D5", date: "7/9 Hanazono 森林走走", 
+                            title: "Hanazono 騎馬體驗 ➔ Tree Walk ➔ 午餐 高橋牧場 PRATIVO 或 MANDRIANO ➔ 高橋牧場 ➔ 飯店 ➔ Lucky超市(暫) ➔ 晚餐 Kumo ➔ 飯店", 
+                            startTime: "10:00",
+                            notes: [
+                                "所有點離飯店都在20分鐘車程內，隨時可先回飯店休息。",
+                                "<a href='https://hanazononiseko.com/en/summer/activities/horsebackriding' target='_blank' class='note-link'>騎馬體驗</a>：有Horse Riding Tour 和 Kids Horse Riding & Animal Feeding 兩種可預約",
+                                "<a href='https://hanazononiseko.com/en/summer/activities/tree-trekking#tree-walk' target='_blank' class='note-link'>Tree Walk</a> Yotei View Deck森林木棧道散步" 
+                            ],
+                            lunch: { name: "高橋牧場 PRATIVO (簡餐) 或 MANDRIANO (PIZZA)" }, 
+                            dinner: { name: "雲餐廳 Kumo Restaurant", url: "https://www.kumoniseko.com/menu/dinner" } 
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "星野",
+                    accentColor: "#2dd4bf",
+                    accommodation: {
+                        stayNights: 4,
+                        title: "The Tower Tomamu 星野度假村",
+                        mapUrl: "https://maps.app.goo.gl/vBAEZvT3an6mVSrT6",
+                        images: [
+                            "hotel2_0.jpg", "hotel2_1.jpg", "hotel2_2.jpg", "hotel2_3.jpg", 
+                            "hotel2_4.jpg", "hotel2_5.jpg", "hotel2_6.jpg", "hotel2_7.jpg", 
+                            "hotel2_8.jpg", "hotel2_9.jpg"
+                        ],
+                        desc: "北海道首選度假聖地。園區內有微笑海灘、水之教堂及眾多特色餐廳。",
+                        links: [
+                            { text: "餐廳列表", url: "https://www.snowtomamu.jp/summer/cn/restaurant/", isDark: true },
+                            { text: "兒童菜單", url: "https://www.snowtomamu.jp/summer/tomamustaybook/restaurant-info/index-cn.php", isDark: true }
+                        ]
+                    },
+                    days: [
+                        { 
+                            day: "D6", date: "7/10 移動日", 
+                            title: "二世谷 ➔ 千歲鮭魚公園 ➔ 星野", 
+                            driveTime: "約 3.5 小時",
+                            lunch: { name: "千歲鮭魚公園", sub: "特色道之驛，享受在地美味" }, 
+                            dinner: { name: "度假村餐廳任選" } 
+                        },
+                        { 
+                            day: "D7-D9", date: "7/11-7/13 星野", title: "隨心所欲的慵懶", 
+                            desc: [
+                                { text: "星野農場玉米節", url: "https://www.snowtomamu.jp/summer/cn/topics/2608/", detail: "：以象徵北海道夏日旬味「玉米」為主題的活動。" },
+                                { text: "雲海平台", url: "https://www.snowtomamu.jp/summer/cn/unkai/", detail: "：在氣候條件許可下，近距離觀賞壯觀雲海的觀景平台。" },
+                                { text: "越野車冒險", url: "https://www.snowtomamu.jp/summer/cn/activity/11171", detail: "：自行駕駛四輪驅動的越野車穿過度假村裡農場區。" },
+                                { text: "農場活動", url: "https://www.snowtomamu.jp/summer/cn/farm/", detail: "：近距離的牛羊接觸                                                     。" },
+                                { text: "微笑海灘", url: "https://www.snowtomamu.jp/summer/cn/minamina/", detail: "：恆溫30度的人工造浪游泳池，夜間點燈也有不同氛圍。" },
+                            ],
+                            lunch: { name: "度假村餐廳任選" }, 
+                            dinner: { name: "度假村餐廳任選" } 
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: "札幌",
+                    accentColor: "#818cf8",
+                    accommodation: {
+                        stayNights: 3,
+                        title: "Solaria Nishitetsu 或 ANA Crowne Plaza Sapporo",
+                        mapUrl: "https://maps.app.goo.gl/KVWuFA5gy5yu7KUo6",
+                        images: [
+                            "hotel3_1.jpg", "hotel3_2.webp", "hotel3_3.jpg", "hotel3_4.jpg", 
+                            "hotel3_5.jpg"
+                        ],
+                        desc: "距札幌站步行 5 分鐘，購物便利。",
+                        links: []
+                    },
+                    days: [
+                        { 
+                            day: "D10-D12", date: "7/14-7/16 城市觀光", 
+                            title: "札幌車站周邊逛街、購物、公園巡禮", 
+                            desc: [
+                                { text: "大丸百貨", url: "https://www.daimaru.co.jp.c.md.hpcn.transer-cn.com/sapporo/floor/", detail: "：B1 伴手禮、超市、化妝品、服飾" },
+                                { text: "STELLAR PLACE", url: "https://www.stellarplace.net/", detail: "：札幌藥妝、迪士尼商店、迴轉壽司根室花丸" },
+                                { text: "札幌東急百貨", url: "https://www.tokyu-dept.co.jp.t.fa.hc.transer.com/sapporo/shop/index.html", detail: "：BIC CAMERA、UNIQLO、HANDS" },
+                                { text: "APIA 地下街", url: "https://www.apiadome.com/", detail: "：Sanrio禮品店、靴下屋、久世福、KOKUMIN藥妝、City Drug" },
+                                { text: "AOAO水族館", url: "https://uu-beihaidao.tw/corporate/aoao-sapporo.shtml", detail: "：都市型水族館" },
+                                { text: "大通公園", url: "https://uu-beihaidao.tw/corporate/aoao-sapporo.shtml", detail: "：噴水池、公園遊樂器材" }
+                                
+                            ],
+                            lunch: { name: "週邊隨選 (拉麵、壽司、湯咖哩...)" }, 
+                            dinner: { name: "週邊隨選 (火鍋、居酒屋、爐端OWL...)" } 
+                        },
+                        { 
+                            day: "D13", date: "7/17 返程日", 
+                            title: "11:00 辦理退房 ➔ 前往機場", 
+                            lunch: { name: "航班 JX851 | 16:25 起飛", sub: "提早到機場用餐、逛多拉A夢樂園" } 
+                        }
+                    ]
+                }
+            ]
+        };
+
+        /* ================================================================
+           自動渲染邏輯區
+           ================================================================
+        */
+        function initApp() {
+            renderQuickInfo();
+            renderTabs();
+            renderContent();
+            switchTab(1, false); // 關閉首次載入時的強制滾動
+        }
+
+        function renderQuickInfo() {
+            const container = document.getElementById('quick-info');
+            if(!container) return;
+            container.innerHTML = ITINERARY_DATA.quickInfo.map(info => `
+                <div class="info-item">
+                    <div class="info-label">${info.label}</div>
+                    <div class="info-val">${info.val}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('phase-tabs');
+            if(!container) return;
+            container.innerHTML = ITINERARY_DATA.phases.map(phase => `
+                <button class="tab-btn" id="btn-p${phase.id}" style="--tab-color: ${phase.accentColor}" onclick="switchTab(${phase.id})">${phase.name}</button>
+            `).join('');
+        }
+
+        function renderContent() {
+            const container = document.getElementById('main-content');
+            if(!container) return;
+            container.innerHTML = ITINERARY_DATA.phases.map(phase => {
+                const acc = phase.accommodation;
+                const accHtml = `
+                    <div class="card acc-card">
+                        <span class="acc-stay-tag">待 ${acc.stayNights} 個晚上</span>
+                        <div class="acc-title">
+                            ${acc.mapUrl 
+                                ? `<a href="${acc.mapUrl}" target="_blank" class="stop-link" style="border-bottom: none; display: inline-flex; gap: 8px;">${acc.title} <svg class="map-icon" style="width: 22px; height: 22px;" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`
+                                : acc.title}
+                        </div>
+                        ${acc.images && acc.images.length > 0 ? `
+                            <div class="carousel">
+                                <div class="carousel-track" id="carousel-acc-${phase.id}">
+                                    ${acc.images.map(img => `<img src="photo/${img}" alt="${acc.title}" class="carousel-slide">`).join('')}
+                                </div>
+                                ${acc.images.length > 1 ? `
+                                    <button class="carousel-btn left" onclick="scrollCarousel('carousel-acc-${phase.id}', -1)">&#10094;</button>
+                                    <button class="carousel-btn right" onclick="scrollCarousel('carousel-acc-${phase.id}', 1)">&#10095;</button>
+                                    <div class="carousel-hint">左右滑動看更多</div>
+                                ` : ''}
+                            </div>
+                        ` : (acc.image ? `<img src="photo/${acc.image}" alt="${acc.title}" class="acc-img">` : '')}
+                        <div class="acc-desc">${acc.desc}</div>
+                        <div class="acc-links">
+                            ${acc.links.map(link => {
+                                if (link.url) return `<a href="${link.url}" target="_blank" class="btn-link ${link.isDark ? 'btn-dark' : ''}">${link.text}</a>`;
+                                return `<div class="btn-link">${link.text}</div>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+
+                const daysHtml = phase.days.map(d => `
+                    <div class="card" style="border-left-color: ${phase.accentColor}">
+                        <div class="card-header">
+                            <span class="day-tag" style="color: ${phase.accentColor}">${d.day}</span>
+                            <span class="date-tag" style="background: ${phase.accentColor}15; color: ${phase.accentColor}">${d.date}</span>
+                        </div>
+                        ${d.startTime ? `
+                            <div class="start-time" style="background: ${phase.accentColor}15; color: ${phase.accentColor}">
+                                <svg class="icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                                預計出發時間：${d.startTime}
+                            </div>
+                        ` : ''}
+                        ${d.title.includes('➔') 
+                            ? `<div class="route-timeline">
+                                ${d.title.split('➔').map((s, i, arr) => {
+                                    let stopName = s.trim();
+                                    let displayStopName = stopName.replace(/^(午餐|晚餐)\s*/g, '') || stopName;
+                                    let textHtml = displayStopName;
+                                    if (d.locationLinks && d.locationLinks[stopName]) {
+                                        textHtml = `<a href="${d.locationLinks[stopName]}" target="_blank" class="stop-link">${displayStopName} <svg class="map-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`;
+                                    } else if (stopName === '飯店' && acc.mapUrl) {
+                                        textHtml = `<a href="${acc.mapUrl}" target="_blank" class="stop-link">${displayStopName} <svg class="map-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`;
+                                    }
+                                
+                                let dotColor = phase.accentColor;
+                                let isMeal = false;
+                                if (stopName.includes('午餐')) { isMeal = true; }
+                                else if (stopName.includes('晚餐')) { isMeal = true; }
+
+                                let dotHtml = isMeal 
+                                    ? `<div class="tl-icon-wrapper"><img src="photo/meal-icon.png" alt="用餐" class="tl-meal-img"></div>`
+                                    : `<div class="tl-dot" style="border-color: ${dotColor}"></div>`;
+
+                                let html = `<div class="tl-stop">
+                                    ${dotHtml}
+                                    <div class="tl-text">${textHtml}</div>
+                                </div>`;
+                                    if (i < arr.length - 1) {
+                                        let nextStopName = arr[i+1].trim();
+                                        let hasOriginLink = (d.locationLinks && d.locationLinks[stopName]) || (stopName === '飯店' && acc.mapUrl);
+                                        let hasDestLink = (d.locationLinks && d.locationLinks[nextStopName]) || (nextStopName === '飯店' && acc.mapUrl);
+                                        let rTime = '';
+                                        if (d.routeTimes && d.routeTimes[i]) {
+                                            let timeSvg = `<svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.08 3.11H5.77L6.85 7zM7.5 16A1.5 1.5 0 1 1 9 14.5 1.5 1.5 0 0 1 7.5 16zm9 0A1.5 1.5 0 1 1 18 14.5 1.5 1.5 0 0 1 16.5 16z"/></svg>`;
+                                            if (d.routeLinks && d.routeLinks[i]) {
+                                                rTime = `<a href="${d.routeLinks[i]}" target="_blank" class="tl-time">${timeSvg}${d.routeTimes[i]}</a>`;
+                                            } else if (hasOriginLink && hasDestLink) {
+                                                let cleanName = (n) => n.replace(/^(午餐|晚餐|外帶)\s*/g, '').trim();
+                                                let searchOrigin = stopName === '飯店' ? acc.title : cleanName(stopName);
+                                                let searchDest = nextStopName === '飯店' ? acc.title : cleanName(nextStopName);
+                                                // 自動加上北海道，大幅提高 Google Maps 路線搜尋的精準度
+                                                let dirUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(searchOrigin + ' 北海道')}&destination=${encodeURIComponent(searchDest + ' 北海道')}`;
+                                                rTime = `<a href="${dirUrl}" target="_blank" class="tl-time">${timeSvg}${d.routeTimes[i]}</a>`;
+                                            } else {
+                                                rTime = `<div class="tl-time">${timeSvg}${d.routeTimes[i]}</div>`;
+                                            }
+                                        }
+                                        html += `<div class="tl-segment">
+                                            <div class="tl-line"></div>
+                                            ${rTime}
+                                        </div>`;
+                                    }
+                                    return html;
+                                }).join('')}
+                               </div>`
+                            : `<div class="card-title">${d.title}</div>`
+                        }
+                        ${d.driveTime ? `
+                            <div class="drive-time">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.08 3.11H5.77L6.85 7zM7.5 16A1.5 1.5 0 1 1 9 14.5 1.5 1.5 0 0 1 7.5 16zm9 0A1.5 1.5 0 1 1 18 14.5 1.5 1.5 0 0 1 16.5 16z"/></svg>
+                                車程：${d.driveTime}
+                            </div>
+                        ` : ''}
+                        ${d.desc ? `
+                            <div class="acc-desc" style="font-size:16px; margin-bottom:10px;">
+                                ${Array.isArray(d.desc) ? `
+                                    <ul class="desc-list">
+                                        ${d.desc.map(item => `
+                                            <li>
+                                                ${item.url ? `<a href="${item.url}" target="_blank" class="desc-link">${item.text}</a>${item.detail || ''}` : item.text}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                ` : d.desc}
+                            </div>
+                        ` : ''}
+                        ${d.links ? d.links.map(l => `<a href="${l.url}" target="_blank" class="btn-link">${l.text}</a>`).join('') : ''}
+                        ${d.notes ? `
+                            <div class="note-box">
+                                <span class="label">行程筆記</span>
+                                <ul class="note-list">
+                                    ${d.notes.map(note => `<li>${note}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        ${d.lunch ? `
+                            <div class="meal-box lunch">
+                                <span class="label">午餐</span>
+                                <span class="meal-content">
+                                    ${d.lunch.url 
+                                        ? `<a href="${d.lunch.url}" target="_blank" class="meal-link">${d.lunch.name} <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>` 
+                                        : d.lunch.name}
+                                </span>
+                                ${d.lunch.sub ? `<div class="meal-sub">${d.lunch.sub}</div>` : ''}
+                            </div>
+                        ` : ''}
+                        ${d.dinner ? `
+                            <div class="meal-box dinner">
+                                <span class="label">晚餐</span>
+                                <span class="meal-content">
+                                    ${d.dinner.url 
+                                        ? `<a href="${d.dinner.url}" target="_blank" class="meal-link">${d.dinner.name} <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>` 
+                                        : d.dinner.name}
+                                </span>
+                                ${d.dinner.sub ? `<div class="meal-sub">${d.dinner.sub}</div>` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+
+                return `<div id="phase-${phase.id}" class="section">${accHtml}${daysHtml}</div>`;
+            }).join('');
+        }
+
+        function switchTab(phaseId, doScroll = true) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn-p${phaseId}`);
+            const activeSec = document.getElementById(`phase-${phaseId}`);
+            if(activeBtn) activeBtn.classList.add('active');
+            if(activeSec) activeSec.classList.add('active');
+            
+            // 使用動態計算位置取代寫死的高度，讓各種大小的設備都能精準定位
+            if (doScroll) {
+                const tabsElement = document.getElementById('phase-tabs');
+                if (tabsElement) {
+                    const y = tabsElement.getBoundingClientRect().top + window.scrollY - 10;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                }
+            }
+            
+            // 動態更新天氣按鈕的連結與顏色
+            const phase = ITINERARY_DATA.phases.find(p => p.id === phaseId);
+            const weatherBtn = document.getElementById('global-weather-btn');
+            if (phase && weatherBtn) {
+                weatherBtn.href = `https://www.google.com/search?q=北海道+${phase.name}+天氣`;
+                weatherBtn.style.backgroundColor = phase.accentColor;
+            }
+        }
+
+        // 控制輪播圖左右滑動的函式
+        function scrollCarousel(id, direction) {
+            const track = document.getElementById(id);
+            if (track) {
+                const scrollAmount = track.clientWidth * direction;
+                track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
