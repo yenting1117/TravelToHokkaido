@@ -395,18 +395,25 @@
                     accentColor: "#818cf8",
                     accommodation: {
                         stayNights: 3,
-                        title: "Solaria Nishitetsu 或 ANA Crowne Plaza Sapporo",
+                        title: "ANA Crowne Plaza Sapporo",
                         mapUrl: "https://maps.app.goo.gl/KVWuFA5gy5yu7KUo6",
                         images: [
-                            "hotel3_1.jpg", "hotel3_2.webp", "hotel3_3.jpg", "hotel3_4.jpg", 
-                            "hotel3_5.jpg"
+                            "hotel3_1.avif", "hotel3_2.avif", "hotel3_3.avif", "hotel3_4.avif"
                         ],
                         desc: "距札幌站步行 5 分鐘，購物便利。",
                         links: []
                     },
                     days: [
                         { 
-                            day: "D10-D12", date: "7/14-7/16 城市觀光", startDate: "2026-07-14", endDate: "2026-07-16",
+                            day: "D10", date: "7/14 移動日", startDate: "2026-07-14",
+                            startTime: "10:00",
+                            title: "9:30 辦理退房 ➔ 10:00 前往札幌ANA Crowne Plaza Sapporo", 
+                            driveTime: "約1小時50分鐘左右",
+                            lunch: { name: "飯店週邊隨選 (拉麵、壽司、湯咖哩...)" }, 
+                            dinner: { name: "飯店週邊隨選 (火鍋、居酒屋、爐端OWL...)" } 
+                        },
+                        { 
+                            day: "D11-D12", date: "7/15-7/16 城市觀光", startDate: "2026-07-15", endDate: "2026-07-16",
                             title: "札幌車站周邊逛街、購物、公園巡禮", 
                             desc: [
                                 { text: "大丸百貨", url: "https://www.daimaru.co.jp.c.md.hpcn.transer-cn.com/sapporo/floor/", mapQuery: "大丸札幌店", detail: "：B1-伴手禮和超市、1F-化妝品、2F-4F服飾、8F-退稅" },
@@ -649,7 +656,7 @@
                             <span class="today-label">今日摘要</span>
                             <span class="today-date">${formatDisplayDate(state.date)}</span>
                         </div>
-                        <div class="today-title">北海道家族遊尚未開始</div>
+                        <div class="today-title">旅遊尚未開始</div>
                         <div class="today-subtitle">距離出發還有 ${state.daysUntil} 天</div>
                         <div class="today-grid">
                             <div class="today-item">
