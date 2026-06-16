@@ -44,15 +44,48 @@
         .quick-info {
             max-width: 95%; margin: -25px auto 20px;
             background: white; border-radius: 20px;
-            display: grid; grid-template-cols: repeat(2, 1fr);
+            display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 12px; padding: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative; z-index: 10; border: 1px solid #e2e8f0;
-        position: relative; z-index: 10; border: 1px solid #e2e8f0;
-        text-align: center;
+            text-align: center;
         }
         .info-label { font-size: 16px; color: var(--text-light); font-weight: 800; }
         .info-val { font-size: 16px; font-weight: 800; color: var(--primary); }
+
+        .today-panel { max-width: 600px; margin: 0 auto 20px; padding: 0 15px; }
+        .today-card {
+            background: var(--card-white); border-radius: 20px; padding: 18px;
+            border: 1px solid #e2e8f0; border-left: 8px solid var(--primary);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.12);
+        }
+        .today-eyebrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .today-label { color: var(--text-light); font-size: 14px; font-weight: 900; }
+        .today-date { background: #f1f5f9; color: var(--text-dark); padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 900; white-space: nowrap; }
+        .today-title { font-size: 24px; font-weight: 900; line-height: 1.25; margin-bottom: 8px; color: #0f172a; }
+        .today-subtitle { color: var(--text-light); font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+        .today-route { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 14px; padding: 12px; font-size: 16px; color: #334155; font-weight: 800; line-height: 1.45; margin: 12px 0; }
+        .today-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+        .today-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px; min-width: 0; }
+        .today-item span { display: block; color: var(--text-light); font-size: 13px; font-weight: 900; margin-bottom: 2px; }
+        .today-item strong { display: block; color: #0f172a; font-size: 16px; line-height: 1.35; }
+        .today-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+        .today-action {
+            border: 1px solid #cbd5e1; border-radius: 12px; background: white; color: var(--text-dark);
+            padding: 10px 14px; text-decoration: none; font-size: 15px; font-weight: 900;
+            display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+        }
+        .today-action.primary { background: var(--primary); color: white; border-color: var(--primary); }
+        .today-preview-note {
+            background: #fffbeb; border: 1px solid #fde68a; color: #92400e;
+            border-radius: 12px; padding: 8px 10px; font-size: 14px; font-weight: 800; margin-top: 12px;
+        }
+
+        @media (max-width: 430px) {
+            .today-grid { grid-template-columns: 1fr; }
+            .today-title { font-size: 22px; }
+            .today-action { flex: 1; justify-content: center; }
+        }
 
         .tabs {
             display: flex; justify-content: center; gap: 12px;
@@ -106,6 +139,8 @@
         .desc-list { margin: 0; padding-left: 24px; font-size: 16px; color: #334155; line-height: 1.5; }
         .desc-list li { margin-bottom: 6px; }
         .desc-link { color: var(--text-dark); text-decoration: underline; text-decoration-style: dashed; text-underline-offset: 3px; font-weight: bold; }
+        .desc-map-link { display: inline-flex; align-items: center; margin-left: 4px; color: var(--primary); text-decoration: none; vertical-align: -2px; }
+        .desc-map-link .map-icon { width: 16px; height: 16px; }
         /* --- 行程筆記視覺樣式 --- */
         .note-box { background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 16px; padding: 15px; margin-top: 12px; }
         .note-box .label { background: #64748b; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
@@ -189,16 +224,18 @@
 
     <section class="quick-info" id="quick-info"></section>
 
+    <section class="today-panel" id="today-card"></section>
+
     <nav class="tabs" id="phase-tabs"></nav>
 
     <main class="container" id="main-content"></main>
 
     <footer>
-        <a href="https://www.google.com/search?q=北海道天氣" target="_blank" class="float-btn" id="global-weather-btn">
+        <a href="https://www.google.com/search?q=北海道天氣" target="_blank" rel="noopener" class="float-btn" id="global-weather-btn">
             <svg class="icon" viewBox="0 0 24 24" style="width: 20px; height: 20px;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
             查詢氣溫
         </a>
-        <a href="https://www.google.com/maps" target="_blank" class="float-btn">
+        <a href="https://www.google.com/maps" target="_blank" rel="noopener" class="float-btn">
             <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
             開啟地圖
         </a>
@@ -211,10 +248,8 @@
         */
         const ITINERARY_DATA = {
             quickInfo: [
-                { label: "家族成員", val: "9 人 (6成人、3小孩)" },
-                { label: "交通方式", val: "二世谷和長程移動採取包車行動<br>札幌市區內移動地鐵或計程車" },
-                { label: "去程航班", val: "JX850 (10:05 ~ 15:10)" },
-                { label: "回程航班", val: "JX851 (16:25 ~ 19:35)" }
+                { label: "去程航班", val: "JX850<br>10:05 ~ 15:10" },
+                { label: "回程航班", val: "JX851<br>16:25 ~ 19:35" }
             ],
             phases: [
                 {
@@ -236,7 +271,7 @@
                         ]
                     },
                     days: [
-                        {   day: "D1", date: "7/5 抵達日", 
+                        {   day: "D1", date: "7/5 抵達日", startDate: "2026-07-05",
                             title: "新千歲機場 ➔ 飯店", 
                             routeTimes: ["2小時"],
                             locationLinks: {
@@ -246,15 +281,15 @@
                             dinner: { name: "Afuri 柚子鹽拉麵", sub: "飯店樓下即可享用。" } 
                         },
                         { 
-                            day: "D2", date: "7/6 名水美景", 
+                            day: "D2", date: "7/6 名水美景", startDate: "2026-07-06",
                             startTime: "10:00",
-                            title: "飯店 ➔ 京極町名水公園 ➔ 午餐 Villa LUPICIA ➔ 第二有島鴕鳥牧場 ➔ Lucky Supermarket Kutchan shop ➔ 飯店", 
+                            title: "飯店 ➔ 京極町名水公園 ➔ 午餐 Villa LUPICIA ➔ 第二有島鴕鳥牧場 ➔ Lucky超市 ➔ 飯店", 
                             routeTimes: ["20分", "25分","20分", "20分", "10分"],
                             locationLinks: {
                                 "京極町名水公園": "https://maps.app.goo.gl/ZaufHopUrnTThcFK8",
                                 "午餐 Villa LUPICIA": "https://maps.app.goo.gl/bS7nY6EU8BosX2ds9",
                                 "第二有島鴕鳥牧場": "https://maps.app.goo.gl/6XEFsPVxfeeW6mTZ8",
-                                "Lucky Supermarket Kutchan shop": "https://maps.app.goo.gl/FqJDA4WgHHm5Nz9E9"
+                                "Lucky超市": "https://maps.app.goo.gl/FqJDA4WgHHm5Nz9E9"
                             },
                             notes: [
                                 "所有點離飯店都在20分鐘車程內，隨時可先回飯店休息。",
@@ -263,10 +298,10 @@
                                 "<strong>Lucky Supermarket</strong>：購買所需生活用品及生鮮食材。"
                             ],
                             lunch: { name: "Villa LUPICIA", sub: "法式精品料理", url: "https://villa.lupicia.co.jp/ja/index.html" }, 
-                            dinner: { name: "房間內自炊和牛海鮮盛宴", sub: "享用超市採買的新鮮和牛與北海道蔬果" } 
+                            dinner: { name: "房間內自炊和牛海鮮盛宴", sub: "享用超市採買豐盛食物" } 
                         },
                         { 
-                            day: "D3", date: "7/7 洞爺湖遊", 
+                            day: "D3", date: "7/7 洞爺湖遊", startDate: "2026-07-07",
                             startTime: "09:30",
                             title: "飯店 ➔ 洞爺湖溫泉/洞爺湖八景 ➔ 午餐 仙堂庵 ➔ Lake Hill Farm 冰淇淋農場 ➔ SAIRO展望台 ➔ 晚餐 外帶 Niseko Pizza ➔ 飯店 ", 
                             routeTimes: ["1.5小時", "10分","15分","5分","1小時","10分"],
@@ -283,28 +318,28 @@
                             dinner: { name: "外帶 Niseko Pizza", sub: "搭配北海道新鮮蔬果，於飯店房內用餐", url: "https://www.madeinhokkaido.com/niseko-pizza/" } 
                         },
                         { 
-                            day: "D4", date: "7/8 探險活動", 
+                            day: "D4", date: "7/8 探險活動", startDate: "2026-07-08",
                             startTime: "09:30",
                             title: "飯店 ➔ Niseko Village Pure 戶外活動 ➔ 午餐 Niseko-yo ➔ 飯店 ➔ 晚餐 Yakiniku ➔ 飯店", 
                             /*links: [{ text: "活動項目", url: "https://www.niseko-village.com/wp-content/uploads/2025/07/Pure_PG_EN.pdf" }],*/
                             notes: [
                                 "所有點離飯店都在20分鐘車程內，隨時可先回飯店休息。",
-                                "<a href='https://www.niseko-village.com/wp-content/uploads/2025/07/Pure_PG_EN.pdf' target='_blank' class='note-link'>Niseko Village Pure</a>",
-                                "雨備改去<a href='https://hanazononiseko.com/en/summer/activities/galaxy-of-kidz' target='_blank' class='note-link'>Galaxy of Kidz</a> "
+                                "<a href='https://www.niseko-village.com/wp-content/uploads/2025/07/Pure_PG_EN.pdf' target='_blank' rel='noopener' class='note-link'>Niseko Village Pure</a>",
+                                "雨備改去<a href='https://hanazononiseko.com/en/summer/activities/galaxy-of-kidz' target='_blank' rel='noopener' class='note-link'>Galaxy of Kidz</a> "
                             ],
                             lunch: { name: "Niseko-yo 商店街 MM Smash Burger" }, 
                             dinner: { name: "燒肉黑牛屋 Yakiniku" } 
                         },
                         { 
-                            day: "D5", date: "7/9 Hanazono 森林走走", 
+                            day: "D5", date: "7/9 Hanazono 森林走走", startDate: "2026-07-09",
                             title: "Hanazono 騎馬體驗 ➔ Tree Walk ➔ 午餐 高橋牧場 PRATIVO 或 MANDRIANO ➔ 高橋牧場 ➔ 飯店 ➔ Lucky超市(暫) ➔ 晚餐 Kumo ➔ 飯店", 
                             startTime: "10:00",
                             notes: [
                                 "所有點離飯店都在20分鐘車程內，隨時可先回飯店休息。",
-                                "<a href='https://hanazononiseko.com/en/summer/activities/horsebackriding' target='_blank' class='note-link'>騎馬體驗</a>：有Horse Riding Tour 和 Kids Horse Riding & Animal Feeding 兩種可預約",
-                                "<a href='https://hanazononiseko.com/en/summer/activities/tree-trekking#tree-walk' target='_blank' class='note-link'>Tree Walk</a> Yotei View Deck森林木棧道散步" 
+                                "<a href='https://hanazononiseko.com/en/summer/activities/horsebackriding' target='_blank' rel='noopener' class='note-link'>騎馬體驗</a>：有Horse Riding Tour 和 Kids Horse Riding & Animal Feeding 兩種可預約",
+                                "<a href='https://hanazononiseko.com/en/summer/activities/tree-trekking#tree-walk' target='_blank' rel='noopener' class='note-link'>Tree Walk</a> Yotei View Deck森林木棧道散步" 
                             ],
-                            lunch: { name: "高橋牧場 PRATIVO (簡餐) 或 MANDRIANO (PIZZA)" }, 
+                            lunch: { name: "高橋牧場 PRATIVO (簡餐) 或 MANDRIANO (PIZZA)", url: "https://maps.app.goo.gl/9fDizQ6JZedM14kh9" }, 
                             dinner: { name: "雲餐廳 Kumo Restaurant", url: "https://www.kumoniseko.com/menu/dinner" } 
                         }
                     ]
@@ -330,14 +365,18 @@
                     },
                     days: [
                         { 
-                            day: "D6", date: "7/10 移動日", 
+                            day: "D6", date: "7/10 移動日", startDate: "2026-07-10",
+                            startTime: "09:00",
                             title: "二世谷 ➔ 千歲鮭魚公園 ➔ 星野", 
                             driveTime: "約 3.5 小時",
+                            notes: [
+                                "二世谷移動到星野距離稍遠，中停新千歲公園參觀,休息和用午餐。"
+                            ],
                             lunch: { name: "千歲鮭魚公園", sub: "特色道之驛，享受在地美味" }, 
                             dinner: { name: "度假村餐廳任選" } 
                         },
                         { 
-                            day: "D7-D9", date: "7/11-7/13 星野", title: "隨心所欲的慵懶", 
+                            day: "D7-D9", date: "7/11-7/13 星野", startDate: "2026-07-11", endDate: "2026-07-13", title: "隨心所欲的慵懶", 
                             desc: [
                                 { text: "星野農場玉米節", url: "https://www.snowtomamu.jp/summer/cn/topics/2608/", detail: "：以象徵北海道夏日旬味「玉米」為主題的活動。" },
                                 { text: "雲海平台", url: "https://www.snowtomamu.jp/summer/cn/unkai/", detail: "：在氣候條件許可下，近距離觀賞壯觀雲海的觀景平台。" },
@@ -367,22 +406,23 @@
                     },
                     days: [
                         { 
-                            day: "D10-D12", date: "7/14-7/16 城市觀光", 
+                            day: "D10-D12", date: "7/14-7/16 城市觀光", startDate: "2026-07-14", endDate: "2026-07-16",
                             title: "札幌車站周邊逛街、購物、公園巡禮", 
                             desc: [
-                                { text: "大丸百貨", url: "https://www.daimaru.co.jp.c.md.hpcn.transer-cn.com/sapporo/floor/", detail: "：B1 伴手禮、超市、化妝品、服飾" },
-                                { text: "STELLAR PLACE", url: "https://www.stellarplace.net/", detail: "：札幌藥妝、迪士尼商店、迴轉壽司根室花丸" },
-                                { text: "札幌東急百貨", url: "https://www.tokyu-dept.co.jp.t.fa.hc.transer.com/sapporo/shop/index.html", detail: "：BIC CAMERA、UNIQLO、HANDS" },
-                                { text: "APIA 地下街", url: "https://www.apiadome.com/", detail: "：Sanrio禮品店、靴下屋、久世福、KOKUMIN藥妝、City Drug" },
-                                { text: "AOAO水族館", url: "https://uu-beihaidao.tw/corporate/aoao-sapporo.shtml", detail: "：都市型水族館" },
-                                { text: "大通公園", url: "https://uu-beihaidao.tw/corporate/aoao-sapporo.shtml", detail: "：噴水池、公園遊樂器材" }
+                                { text: "大丸百貨", url: "https://www.daimaru.co.jp.c.md.hpcn.transer-cn.com/sapporo/floor/", mapQuery: "大丸札幌店", detail: "：B1-伴手禮和超市、1F-化妝品、2F-4F服飾、8F-退稅" },
+                                { text: "大丸百貨餐廳", url: "https://www.daimaru.co.jp.c.md.hpcn.transer-cn.com/sapporo/restaurant/", mapQuery: "大丸札幌店餐廳", detail: "：壽司善、仙台牛舌、爐端燒紅酒餐廳、烏龍麵、蕎麥麵" },
+                                { text: "STELLAR PLACE", url: "https://www.stellarplace.net/", mapQuery: "札幌ステラプレイス", detail: "：札幌藥妝、迪士尼商店、迴轉壽司根室花丸" },
+                                { text: "札幌東急百貨", url: "https://www.tokyu-dept.co.jp.t.fa.hc.transer.com/sapporo/shop/index.html", mapQuery: "東急百貨 札幌店", detail: "：BIC CAMERA、UNIQLO、HANDS" },
+                                { text: "APIA 地下街", url: "https://www.apiadome.com/", mapQuery: "札幌駅地下街 APIA", detail: "：Sanrio禮品店、靴下屋、久世福、KOKUMIN藥妝、City Drug" },
+                                { text: "AOAO水族館", url: "https://uu-beihaidao.tw/corporate/aoao-sapporo.shtml", mapQuery: "AOAO SAPPORO", detail: "：都市型水族館" },
+                                { text: "大通公園", url: "https://uu-beihaidao.tw/corporate/aoao-sapporo.shtml", mapQuery: "大通公園 札幌", detail: "：噴水池、公園遊樂器材" }
                                 
                             ],
                             lunch: { name: "週邊隨選 (拉麵、壽司、湯咖哩...)" }, 
                             dinner: { name: "週邊隨選 (火鍋、居酒屋、爐端OWL...)" } 
                         },
                         { 
-                            day: "D13", date: "7/17 返程日", 
+                            day: "D13", date: "7/17 返程日", startDate: "2026-07-17",
                             title: "11:00 辦理退房 ➔ 前往機場", 
                             lunch: { name: "航班 JX851 | 16:25 起飛", sub: "提早到機場用餐、逛多拉A夢樂園" } 
                         }
@@ -395,11 +435,303 @@
            自動渲染邏輯區
            ================================================================
         */
+        const MS_PER_DAY = 24 * 60 * 60 * 1000;
+        const MAP_SEARCH_ALIASES = {
+            "二世谷": "Setsu Niseko 雪二世谷",
+            "星野": "The Tower Tomamu 星野度假村",
+            "前往機場": "新千歲機場",
+            "洞爺湖溫泉/洞爺湖八景": "洞爺湖溫泉 洞爺湖八景",
+            "Niseko Village Pure 戶外活動": "Niseko Village Pure",
+            "午餐 Niseko-yo": "Niseko-yo Niseko",
+            "晚餐 Yakiniku": "燒肉黑牛屋 Niseko",
+            "Hanazono 騎馬體驗": "Hanazono Niseko Horse Riding",
+            "Tree Walk": "Hanazono Tree Walk Niseko",
+            "午餐 高橋牧場 PRATIVO 或 MANDRIANO": "Niseko Takahashi Dairy Farm PRATIVO MANDRIANO",
+            "高橋牧場": "Niseko Takahashi Dairy Farm",
+            "Lucky超市(暫)": "Lucky Supermarket Kutchan",
+            "晚餐 Kumo": "Kumo Restaurant Niseko",
+            "千歲鮭魚公園": "道之駅 サーモンパーク千歳"
+        };
+
         function initApp() {
             renderQuickInfo();
             renderTabs();
             renderContent();
-            switchTab(1, false); // 關閉首次載入時的強制滾動
+            const todayState = getTodayState();
+            renderTodayCard(todayState);
+            switchTab(todayState.activePhaseId || 1, false); // 關閉首次載入時的強制滾動
+        }
+
+        function getAllDays() {
+            const days = [];
+            ITINERARY_DATA.phases.forEach(phase => {
+                phase.days.forEach(day => days.push({ phase, day }));
+            });
+            return days.sort((a, b) => toDateValue(a.day.startDate) - toDateValue(b.day.startDate));
+        }
+
+        function getTodayState() {
+            const days = getAllDays();
+            const previewDate = getPreviewDate();
+            const today = previewDate || getJapanDateString();
+            const first = days[0];
+            const last = days[days.length - 1];
+
+            if (toDateValue(today) < toDateValue(first.day.startDate)) {
+                return {
+                    status: 'before',
+                    date: today,
+                    previewDate,
+                    first,
+                    daysUntil: daysBetween(today, first.day.startDate),
+                    activePhaseId: first.phase.id
+                };
+            }
+
+            if (toDateValue(today) > toDateValue(last.day.endDate || last.day.startDate)) {
+                return {
+                    status: 'after',
+                    date: today,
+                    previewDate,
+                    last,
+                    activePhaseId: last.phase.id
+                };
+            }
+
+            const current = days.find(item => isWithinDate(today, item.day.startDate, item.day.endDate || item.day.startDate));
+            return {
+                status: 'during',
+                date: today,
+                previewDate,
+                phase: current.phase,
+                day: current.day,
+                activePhaseId: current.phase.id
+            };
+        }
+
+        function getPreviewDate() {
+            const params = new URLSearchParams(window.location.search);
+            const date = params.get('date');
+            if (!date || !isValidDateString(date)) return null;
+            return date;
+        }
+
+        function isPreviewMode() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('preview') === '1';
+        }
+
+        function getJapanDateString() {
+            try {
+                return new Intl.DateTimeFormat('sv-SE', {
+                    timeZone: 'Asia/Tokyo',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).format(new Date());
+            } catch (error) {
+                return new Date().toISOString().slice(0, 10);
+            }
+        }
+
+        function isValidDateString(dateStr) {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+            const [year, month, day] = dateStr.split('-').map(Number);
+            const date = new Date(Date.UTC(year, month - 1, day));
+            return date.getUTCFullYear() === year &&
+                date.getUTCMonth() === month - 1 &&
+                date.getUTCDate() === day;
+        }
+
+        function toDateValue(dateStr) {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            return Date.UTC(year, month - 1, day);
+        }
+
+        function isWithinDate(dateStr, startDate, endDate) {
+            const value = toDateValue(dateStr);
+            return value >= toDateValue(startDate) && value <= toDateValue(endDate);
+        }
+
+        function daysBetween(fromDate, toDate) {
+            return Math.round((toDateValue(toDate) - toDateValue(fromDate)) / MS_PER_DAY);
+        }
+
+        function formatDisplayDate(dateStr) {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            return `${year}/${month}/${day}`;
+        }
+
+        function formatRouteSummary(title) {
+            if (!title.includes('➔')) return title;
+            return title.split('➔')
+                .map(stop => stop.trim().replace(/^(午餐|晚餐)\s*/g, ''))
+                .join(' → ');
+        }
+
+        function cleanStopName(stopName) {
+            return stopName.trim().replace(/\s+/g, ' ');
+        }
+
+        function getStopSearchName(stopName, acc) {
+            const cleanName = cleanStopName(stopName);
+            if (!cleanName) return '';
+            if (cleanName === '飯店' || cleanName.includes('辦理退房')) return acc.title;
+            return MAP_SEARCH_ALIASES[cleanName] ||
+                cleanName.replace(/^(午餐|晚餐|外帶)\s*/g, '').trim();
+        }
+
+        function getStopMapUrl(stopName, day, acc) {
+            const cleanName = cleanStopName(stopName);
+            if (day.locationLinks && day.locationLinks[cleanName]) return day.locationLinks[cleanName];
+            if ((cleanName === '飯店' || cleanName.includes('辦理退房')) && acc.mapUrl) return acc.mapUrl;
+
+            const searchName = getStopSearchName(cleanName, acc);
+            if (!searchName) return '';
+            return getMapSearchUrl(searchName);
+        }
+
+        function getMapSearchUrl(query) {
+            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query + ' 北海道')}`;
+        }
+
+        function getDescMapLink(item) {
+            const mapUrl = item.mapUrl || (item.mapQuery ? getMapSearchUrl(item.mapQuery) : '');
+            if (!mapUrl) return '';
+            return `<a href="${mapUrl}" target="_blank" rel="noopener" class="desc-map-link" aria-label="${item.text} 地圖" title="${item.text} 地圖"><svg class="map-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`;
+        }
+
+        function getDayRouteUrl(day, acc) {
+            if (!day.title.includes('➔')) return '';
+            const stops = day.title.split('➔')
+                .map(stop => getStopSearchName(stop, acc))
+                .filter(Boolean);
+            if (stops.length < 2) return '';
+
+            const origin = stops[0];
+            const destination = stops[stops.length - 1];
+            const waypoints = stops.slice(1, -1).join('|');
+            let url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin + ' 北海道')}&destination=${encodeURIComponent(destination + ' 北海道')}`;
+            if (waypoints) url += `&waypoints=${encodeURIComponent(waypoints)}`;
+            return url;
+        }
+
+        function getQuickInfoValue(label) {
+            const item = ITINERARY_DATA.quickInfo.find(info => info.label === label);
+            return item ? item.val : '';
+        }
+
+        function renderPreviewNote(state) {
+            if (!state.previewDate) return '';
+            return `<div class="today-preview-note">目前使用預覽日期 ${formatDisplayDate(state.previewDate)}。移除網址中的 date 參數就會回到自動判斷。</div>`;
+        }
+
+        function renderPreviewActions(primaryColor, options) {
+            if (!isPreviewMode()) return '';
+            return `
+                <div class="today-actions">
+                    ${options.map((option, index) => `
+                        <a href="?preview=1&date=${option.date}" class="today-action ${index === 0 ? 'primary' : ''}" ${index === 0 ? `style="background: ${primaryColor}; border-color: ${primaryColor};"` : ''}>${option.label}</a>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderTodayCard(state) {
+            const container = document.getElementById('today-card');
+            if (!container) return;
+
+            if (state.status === 'before') {
+                const first = state.first;
+                container.innerHTML = `
+                    <div class="today-card" style="border-left-color: ${first.phase.accentColor}">
+                        <div class="today-eyebrow">
+                            <span class="today-label">今日摘要</span>
+                            <span class="today-date">${formatDisplayDate(state.date)}</span>
+                        </div>
+                        <div class="today-title">北海道家族遊尚未開始</div>
+                        <div class="today-subtitle">距離出發還有 ${state.daysUntil} 天</div>
+                        <div class="today-grid">
+                            <div class="today-item">
+                                <span>出發日</span>
+                                <strong>${formatDisplayDate(first.day.startDate)} ${first.day.day}</strong>
+                            </div>
+                            <div class="today-item">
+                                <span>去程航班</span>
+                                <strong>${getQuickInfoValue('去程航班')}</strong>
+                            </div>
+                        </div>
+                        ${renderPreviewActions(first.phase.accentColor, [
+                            { label: '預覽 D2', date: '2026-07-06' },
+                            { label: '預覽札幌日', date: '2026-07-14' }
+                        ])}
+                        ${renderPreviewNote(state)}
+                    </div>
+                `;
+                return;
+            }
+
+            if (state.status === 'after') {
+                const last = state.last;
+                container.innerHTML = `
+                    <div class="today-card" style="border-left-color: ${last.phase.accentColor}">
+                        <div class="today-eyebrow">
+                            <span class="today-label">今日摘要</span>
+                            <span class="today-date">${formatDisplayDate(state.date)}</span>
+                        </div>
+                        <div class="today-title">北海道家族遊已結束</div>
+                        <div class="today-subtitle">最後行程：${last.day.day} ${last.day.date}</div>
+                        ${renderPreviewActions(last.phase.accentColor, [
+                            { label: '預覽返程日', date: '2026-07-17' },
+                            { label: '預覽 D2', date: '2026-07-06' }
+                        ])}
+                        ${renderPreviewNote(state)}
+                    </div>
+                `;
+                return;
+            }
+
+            const phase = state.phase;
+            const day = state.day;
+            const acc = phase.accommodation;
+            const weatherUrl = `https://www.google.com/search?q=${encodeURIComponent('北海道 ' + phase.name + ' 天氣')}`;
+            const dayRouteUrl = getDayRouteUrl(day, acc);
+            container.innerHTML = `
+                <div class="today-card" style="border-left-color: ${phase.accentColor}">
+                    <div class="today-eyebrow">
+                        <span class="today-label">今日行程</span>
+                        <span class="today-date">${formatDisplayDate(state.date)}</span>
+                    </div>
+                    <div class="today-title">${day.day} ${day.date}</div>
+                    <div class="today-subtitle">${day.title.includes('➔') ? '今日路線' : day.title}</div>
+                    <div class="today-route">${formatRouteSummary(day.title)}</div>
+                    <div class="today-grid">
+                        <div class="today-item">
+                            <span>住宿</span>
+                            <strong>${acc.title}</strong>
+                        </div>
+                        <div class="today-item">
+                            <span>出發/車程</span>
+                            <strong>${day.startTime ? day.startTime : (day.driveTime || '彈性安排')}</strong>
+                        </div>
+                        <div class="today-item">
+                            <span>午餐</span>
+                            <strong>${day.lunch ? day.lunch.name : '未安排'}</strong>
+                        </div>
+                        <div class="today-item">
+                            <span>晚餐</span>
+                            <strong>${day.dinner ? day.dinner.name : '未安排'}</strong>
+                        </div>
+                    </div>
+                    <div class="today-actions">
+                        ${acc.mapUrl ? `<a href="${acc.mapUrl}" target="_blank" rel="noopener" class="today-action">飯店地圖</a>` : ''}
+                        ${dayRouteUrl ? `<a href="${dayRouteUrl}" target="_blank" rel="noopener" class="today-action">今日路線</a>` : ''}
+                        <a href="${weatherUrl}" target="_blank" rel="noopener" class="today-action">今日天氣</a>
+                        <button type="button" class="today-action primary" style="background: ${phase.accentColor}; border-color: ${phase.accentColor};" onclick="switchTab(${phase.id})">看完整行程</button>
+                    </div>
+                    ${renderPreviewNote(state)}
+                </div>
+            `;
         }
 
         function renderQuickInfo() {
@@ -431,13 +763,13 @@
                         <span class="acc-stay-tag">待 ${acc.stayNights} 個晚上</span>
                         <div class="acc-title">
                             ${acc.mapUrl 
-                                ? `<a href="${acc.mapUrl}" target="_blank" class="stop-link" style="border-bottom: none; display: inline-flex; gap: 8px;">${acc.title} <svg class="map-icon" style="width: 22px; height: 22px;" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`
+                                ? `<a href="${acc.mapUrl}" target="_blank" rel="noopener" class="stop-link" style="border-bottom: none; display: inline-flex; gap: 8px;">${acc.title} <svg class="map-icon" style="width: 22px; height: 22px;" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`
                                 : acc.title}
                         </div>
                         ${acc.images && acc.images.length > 0 ? `
                             <div class="carousel">
                                 <div class="carousel-track" id="carousel-acc-${phase.id}">
-                                    ${acc.images.map(img => `<img src="photo/${img}" alt="${acc.title}" class="carousel-slide">`).join('')}
+                                    ${acc.images.map(img => `<img src="photo/${img}" alt="${acc.title}" class="carousel-slide" loading="lazy">`).join('')}
                                 </div>
                                 ${acc.images.length > 1 ? `
                                     <button class="carousel-btn left" onclick="scrollCarousel('carousel-acc-${phase.id}', -1)">&#10094;</button>
@@ -445,11 +777,11 @@
                                     <div class="carousel-hint">左右滑動看更多</div>
                                 ` : ''}
                             </div>
-                        ` : (acc.image ? `<img src="photo/${acc.image}" alt="${acc.title}" class="acc-img">` : '')}
+                        ` : (acc.image ? `<img src="photo/${acc.image}" alt="${acc.title}" class="acc-img" loading="lazy">` : '')}
                         <div class="acc-desc">${acc.desc}</div>
                         <div class="acc-links">
                             ${acc.links.map(link => {
-                                if (link.url) return `<a href="${link.url}" target="_blank" class="btn-link ${link.isDark ? 'btn-dark' : ''}">${link.text}</a>`;
+                                if (link.url) return `<a href="${link.url}" target="_blank" rel="noopener" class="btn-link ${link.isDark ? 'btn-dark' : ''}">${link.text}</a>`;
                                 return `<div class="btn-link">${link.text}</div>`;
                             }).join('')}
                         </div>
@@ -473,12 +805,10 @@
                                 ${d.title.split('➔').map((s, i, arr) => {
                                     let stopName = s.trim();
                                     let displayStopName = stopName.replace(/^(午餐|晚餐)\s*/g, '') || stopName;
-                                    let textHtml = displayStopName;
-                                    if (d.locationLinks && d.locationLinks[stopName]) {
-                                        textHtml = `<a href="${d.locationLinks[stopName]}" target="_blank" class="stop-link">${displayStopName} <svg class="map-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`;
-                                    } else if (stopName === '飯店' && acc.mapUrl) {
-                                        textHtml = `<a href="${acc.mapUrl}" target="_blank" class="stop-link">${displayStopName} <svg class="map-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`;
-                                    }
+                                    let stopMapUrl = getStopMapUrl(stopName, d, acc);
+                                    let textHtml = stopMapUrl
+                                        ? `<a href="${stopMapUrl}" target="_blank" rel="noopener" class="stop-link">${displayStopName} <svg class="map-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>`
+                                        : displayStopName;
                                 
                                 let dotColor = phase.accentColor;
                                 let isMeal = false;
@@ -486,7 +816,7 @@
                                 else if (stopName.includes('晚餐')) { isMeal = true; }
 
                                 let dotHtml = isMeal 
-                                    ? `<div class="tl-icon-wrapper"><img src="photo/meal-icon.png" alt="用餐" class="tl-meal-img"></div>`
+                                            ? `<div class="tl-icon-wrapper"><img src="photo/meal-icon.png" alt="用餐" class="tl-meal-img" loading="lazy"></div>`
                                     : `<div class="tl-dot" style="border-color: ${dotColor}"></div>`;
 
                                 let html = `<div class="tl-stop">
@@ -495,22 +825,18 @@
                                 </div>`;
                                     if (i < arr.length - 1) {
                                         let nextStopName = arr[i+1].trim();
-                                        let hasOriginLink = (d.locationLinks && d.locationLinks[stopName]) || (stopName === '飯店' && acc.mapUrl);
-                                        let hasDestLink = (d.locationLinks && d.locationLinks[nextStopName]) || (nextStopName === '飯店' && acc.mapUrl);
                                         let rTime = '';
                                         if (d.routeTimes && d.routeTimes[i]) {
                                             let timeSvg = `<svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.08 3.11H5.77L6.85 7zM7.5 16A1.5 1.5 0 1 1 9 14.5 1.5 1.5 0 0 1 7.5 16zm9 0A1.5 1.5 0 1 1 18 14.5 1.5 1.5 0 0 1 16.5 16z"/></svg>`;
                                             if (d.routeLinks && d.routeLinks[i]) {
-                                                rTime = `<a href="${d.routeLinks[i]}" target="_blank" class="tl-time">${timeSvg}${d.routeTimes[i]}</a>`;
-                                            } else if (hasOriginLink && hasDestLink) {
-                                                let cleanName = (n) => n.replace(/^(午餐|晚餐|外帶)\s*/g, '').trim();
-                                                let searchOrigin = stopName === '飯店' ? acc.title : cleanName(stopName);
-                                                let searchDest = nextStopName === '飯店' ? acc.title : cleanName(nextStopName);
-                                                // 自動加上北海道，大幅提高 Google Maps 路線搜尋的精準度
-                                                let dirUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(searchOrigin + ' 北海道')}&destination=${encodeURIComponent(searchDest + ' 北海道')}`;
-                                                rTime = `<a href="${dirUrl}" target="_blank" class="tl-time">${timeSvg}${d.routeTimes[i]}</a>`;
+                                                rTime = `<a href="${d.routeLinks[i]}" target="_blank" rel="noopener" class="tl-time">${timeSvg}${d.routeTimes[i]}</a>`;
                                             } else {
-                                                rTime = `<div class="tl-time">${timeSvg}${d.routeTimes[i]}</div>`;
+                                                let searchOrigin = getStopSearchName(stopName, acc);
+                                                let searchDest = getStopSearchName(nextStopName, acc);
+                                                let dirUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(searchOrigin + ' 北海道')}&destination=${encodeURIComponent(searchDest + ' 北海道')}`;
+                                                rTime = searchOrigin && searchDest
+                                                    ? `<a href="${dirUrl}" target="_blank" rel="noopener" class="tl-time">${timeSvg}${d.routeTimes[i]}</a>`
+                                                    : `<div class="tl-time">${timeSvg}${d.routeTimes[i]}</div>`;
                                             }
                                         }
                                         html += `<div class="tl-segment">
@@ -535,14 +861,14 @@
                                     <ul class="desc-list">
                                         ${d.desc.map(item => `
                                             <li>
-                                                ${item.url ? `<a href="${item.url}" target="_blank" class="desc-link">${item.text}</a>${item.detail || ''}` : item.text}
+                                                ${item.url ? `<a href="${item.url}" target="_blank" rel="noopener" class="desc-link">${item.text}</a>` : item.text}${getDescMapLink(item)}${item.detail || ''}
                                             </li>
                                         `).join('')}
                                     </ul>
                                 ` : d.desc}
                             </div>
                         ` : ''}
-                        ${d.links ? d.links.map(l => `<a href="${l.url}" target="_blank" class="btn-link">${l.text}</a>`).join('') : ''}
+                        ${d.links ? d.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener" class="btn-link">${l.text}</a>`).join('') : ''}
                         ${d.notes ? `
                             <div class="note-box">
                                 <span class="label">行程筆記</span>
@@ -556,7 +882,7 @@
                                 <span class="label">午餐</span>
                                 <span class="meal-content">
                                     ${d.lunch.url 
-                                        ? `<a href="${d.lunch.url}" target="_blank" class="meal-link">${d.lunch.name} <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>` 
+                                        ? `<a href="${d.lunch.url}" target="_blank" rel="noopener" class="meal-link">${d.lunch.name} <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>` 
                                         : d.lunch.name}
                                 </span>
                                 ${d.lunch.sub ? `<div class="meal-sub">${d.lunch.sub}</div>` : ''}
@@ -567,7 +893,7 @@
                                 <span class="label">晚餐</span>
                                 <span class="meal-content">
                                     ${d.dinner.url 
-                                        ? `<a href="${d.dinner.url}" target="_blank" class="meal-link">${d.dinner.name} <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>` 
+                                        ? `<a href="${d.dinner.url}" target="_blank" rel="noopener" class="meal-link">${d.dinner.name} <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></a>` 
                                         : d.dinner.name}
                                 </span>
                                 ${d.dinner.sub ? `<div class="meal-sub">${d.dinner.sub}</div>` : ''}
