@@ -1,0 +1,16 @@
+{
+  "name": "北海道家族慢遊",
+  "short_name": "北海道",
+  "description": "Hokkaido 2026 家族行程表",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f0fdfa",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    {
+      "src": "photo/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}
